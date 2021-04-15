@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"go-restish/internal/database"
 	internalHttp "go-restish/internal/http"
 
 	"github.com/valyala/fasthttp"
@@ -11,6 +12,12 @@ import (
 // Run - entrypoint of the api
 func Run() error {
 	fmt.Println("Running App")
+
+	_, err := database.InitDatabase()
+
+	if err != nil {
+		return err
+	}
 
 	h := internalHttp.NewHandler()
 	h.InitRouter()
