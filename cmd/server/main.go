@@ -25,7 +25,7 @@ func Run() error {
 	h := internalHttp.NewHandler(userService)
 	h.InitRouter()
 
-	if err := fasthttp.ListenAndServe(":"+"8080", h.Router.Handler); err != nil {
+	if err := fasthttp.ListenAndServe(":8080", h.Router.Handler); err != nil {
 		return err
 	}
 

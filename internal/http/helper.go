@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 )
@@ -30,4 +31,21 @@ type errorResp map[string]string
 
 func newRespError(msg string) errorResp {
 	return errorResp{"error": msg}
+}
+
+func Paging(c *fasthttp.RequestCtx, key string, def int64) int64 {
+	d := def
+	bytes := c.QueryArgs().Peek(key)
+
+	if len(bytes) == 0 {
+		return d
+	}
+
+	d, err := strconv.ParseInt(string(bytes), 10, 64)
+
+	if err != nil {
+		return d
+	}
+
+	return d
 }

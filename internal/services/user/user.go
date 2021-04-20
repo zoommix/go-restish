@@ -1,8 +1,6 @@
 package user
 
 import (
-	"context"
-
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -11,11 +9,19 @@ type Service struct {
 }
 
 type User struct {
-	ID        uint
+	ID        int64
 	FirstName string
 	LastName  string
 	Email     string
 	Username  string
+}
+
+type UserJSON struct {
+	ID        int64  `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Username  string `json:"username"`
 }
 
 func NewService(db *pgxpool.Pool) *Service {
@@ -33,26 +39,6 @@ type StudentService interface {
 	DeleteUser(ID uint) error
 }
 
-func (s *Service) GetAllUsers(limit, skip uint) ([]User, error) {
-	var users []User
-
-	rows, err := s.DB.Query(context.Background(), getAllUsersSQL, limit, skip)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		u := User{}
-
-		if err := rows.Scan(u.ID, u.FirstName, u.LastName, u.Username); err != nil {
-			return nil, err
-		}
-
-		users = append(users, u)
-	}
-
-	rows.Close()
-
-	return users, nil
+func (u *User) ToJSON() UserJSON {
+	return UserJSON(*u)
 }
