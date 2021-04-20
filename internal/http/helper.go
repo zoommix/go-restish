@@ -6,12 +6,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-// SetStatus ...
 func SetStatus(ctx *fasthttp.RequestCtx, code int) {
 	ctx.Response.SetStatusCode(code)
 }
 
-// WriteJSON ...
 func WriteJSON(ctx *fasthttp.RequestCtx, obj interface{}) {
 	ctx.Response.Header.SetCanonical(strContentType, strApplicationJSON)
 
@@ -20,7 +18,6 @@ func WriteJSON(ctx *fasthttp.RequestCtx, obj interface{}) {
 	}
 }
 
-// WriteError ...
 func WriteError(ctx *fasthttp.RequestCtx, code int, obj interface{}) {
 	ctx.Response.SetStatusCode(code)
 

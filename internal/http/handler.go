@@ -1,6 +1,9 @@
 package http
 
 import (
+	"go-restish/internal/services/user"
+	"log"
+
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 )
@@ -10,27 +13,33 @@ var (
 	strApplicationJSON = []byte("application/json")
 )
 
-// Handler ...
 type Handler struct {
-	Router *router.Router
+	Router      *router.Router
+	UserService *user.Service
 }
 
-// NewHandler ...
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(userService *user.Service) *Handler {
+	return &Handler{UserService: userService}
 }
 
 // InitRouter ...
 func (h *Handler) InitRouter() *Handler {
 	h.Router = router.New()
 
-	h.Router.GET("/api/status", Status)
+	h.Router.GET("/api/status", h.Status)
 
 	return h
 }
 
-// Status ...
-func Status(c *fasthttp.RequestCtx) {
+func (h *Handler) Status(c *fasthttp.RequestCtx) {
+	users, err := h.UserService.GetAllUsers(15, 0)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(users)
+
 	WriteJSON(c, map[string]string{"status": "ok"})
 	SetStatus(c, fasthttp.StatusOK)
 }

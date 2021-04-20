@@ -5,6 +5,7 @@ import (
 
 	"go-restish/internal/database"
 	internalHttp "go-restish/internal/http"
+	"go-restish/internal/services/user"
 
 	"github.com/valyala/fasthttp"
 )
@@ -13,13 +14,15 @@ import (
 func Run() error {
 	fmt.Println("Running App")
 
-	_, err := database.InitDatabase()
+	db, err := database.InitDatabase()
 
 	if err != nil {
 		return err
 	}
 
-	h := internalHttp.NewHandler()
+	userService := user.NewService(db)
+
+	h := internalHttp.NewHandler(userService)
 	h.InitRouter()
 
 	if err := fasthttp.ListenAndServe(":"+"8080", h.Router.Handler); err != nil {
