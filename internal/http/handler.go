@@ -28,6 +28,7 @@ func (h *Handler) InitRouter() *Handler {
 
 	h.Router.GET("/api/status", h.Status)
 	h.Router.GET("/api/users", h.ListUsers)
+	h.Router.POST("/api/users", h.CreateUser)
 
 	return h
 }
@@ -50,12 +51,30 @@ func (h *Handler) ListUsers(c *fasthttp.RequestCtx) {
 		return
 	}
 
-	json_users := make([]user.UserJSON, 0)
+	jsonUsers := make([]user.UserJSON, 0)
 
 	for _, u := range users {
-		json_users = append(json_users, u.ToJSON())
+		jsonUsers = append(jsonUsers, u.ToJSON())
 	}
 
-	WriteJSON(c, json_users)
+	WriteJSON(c, jsonUsers)
 	SetStatus(c, fasthttp.StatusOK)
+}
+
+func (h *Handler) CreateUser(c *fasthttp.RequestCtx) {
+	u, err := h.UserService.ParseUserFromCtx(c)
+
+	if err != nil {
+		WriteError(c, fasthttp.StatusUnprocessableEntity, newRespError(err.Error()))
+		return
+	}
+
+	u, err = h.UserService.CreateUser(u)
+
+	if err != nil {
+		WriteError(c, fasthttp.StatusInternalServerError, newRespError(err.Error()))
+		return
+	}
+
+	WriteJSON(c, u.ToJSON())
 }

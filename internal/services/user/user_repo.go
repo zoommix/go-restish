@@ -36,3 +36,20 @@ func (s *Service) GetAllUsers(limit, skip int64) ([]User, error) {
 
 	return users, nil
 }
+
+func (s *Service) CreateUser(u *User) (*User, error) {
+	err := s.DB.QueryRow(
+		context.Background(),
+		createUserSQL,
+		u.FirstName,
+		u.LastName,
+		strings.ToLower(u.Email),
+		u.Username,
+	).Scan(&u.ID, &u.CreatedAt, &u.UpdatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
