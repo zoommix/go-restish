@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"go-restish/internal/database"
 	internalHttp "go-restish/internal/http"
@@ -13,6 +14,8 @@ import (
 // Run - entrypoint of the api
 func Run() error {
 	fmt.Println("Running App")
+
+	os.Setenv("TZ", "UTC") // set server timezone to UTC
 
 	db, err := database.InitDatabase()
 

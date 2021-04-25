@@ -1,6 +1,9 @@
 package user
 
-import "context"
+import (
+	"context"
+	"strings"
+)
 
 func (s *Service) GetAllUsers(limit, skip int64) ([]User, error) {
 	users := make([]User, 0)
@@ -14,7 +17,15 @@ func (s *Service) GetAllUsers(limit, skip int64) ([]User, error) {
 	for rows.Next() {
 		u := User{}
 
-		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Username); err != nil {
+		if err := rows.Scan(
+			&u.ID,
+			&u.FirstName,
+			&u.LastName,
+			&u.Email,
+			&u.Username,
+			&u.CreatedAt,
+			&u.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
 

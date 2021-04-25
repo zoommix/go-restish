@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -14,14 +16,18 @@ type User struct {
 	LastName  string
 	Email     string
 	Username  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type UserJSON struct {
-	ID        int64  `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
-	Username  string `json:"username"`
+	ID        int64     `json:"id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Email     string    `json:"email"`
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewService(db *pgxpool.Pool) *Service {
